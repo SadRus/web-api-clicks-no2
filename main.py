@@ -7,16 +7,16 @@ load_dotenv()
 
 
 def shorten_link(token, url):
+    response = requests.get(url)
+    response.raise_for_status()
     headers = {
         'Authorization': f'Bearer {token}'
     }
     data = {
-        'long_url': url
+        'long_url': response.url
     }
     data = json.dumps(data)
 
-    response = requests.get(url)
-    response.raise_for_status()
     response = requests.post('https://api-ssl.bitly.com/v4/bitlinks',
                              headers=headers, data=data)
     response.raise_for_status()
@@ -46,13 +46,17 @@ def is_link_shorten(url):
     return False
 
 
-token = os.environ['TOKEN']
-url = input()
+def main():
+    token = os.environ['TOKEN']
+    url = input()
+    try:
+        if is_link_shorten(url):
+            print('Количество кликов', count_clicks(token, url))
+        else:
+            print('Битлинк', shorten_link(token, url))
+    except requests.exceptions.ConnectionError as error:
+        exit(f"Can't get data from server: {error}")
 
-try:
-    if is_link_shorten(url):
-        print('Количество кликов', count_clicks(token, url))
-    else:
-        print('Битлинк', shorten_link(token, url))
-except requests.exceptions.HTTPError as error:
-    exit(f"Can't get data from server: {error}")
+
+if __name__ == '__main__':
+    main()
