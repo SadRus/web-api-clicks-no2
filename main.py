@@ -7,13 +7,15 @@ load_dotenv()
 
 
 def shorten_link(token, url):
+    if 'http:' in url:
+        url = url.replace('http', 'https')
     response = requests.get(url)
     response.raise_for_status()
     headers = {
         'Authorization': f'Bearer {token}'
     }
     data = {
-        'long_url': response.url
+        'long_url': url
     }
     data = json.dumps(data)
 
@@ -36,12 +38,11 @@ def count_clicks(token, bitlink):
         f'https://api-ssl.bitly.com/v4/bitlinks/{bitlink}/clicks/summary',
         headers=headers, params=params)
     response.raise_for_status()
-    return response.text
+    return json.loads(response.text)['total_clicks']
 
 
 def is_link_shorten(url):
-    parsed_url = urlparse(url)
-    if 'bit.ly' in parsed_url.path:
+    if 'bit.ly' in urlparse(url).path:
         return True
     return False
 
@@ -51,9 +52,9 @@ def main():
     url = input()
     try:
         if is_link_shorten(url):
-            print('Количество кликов', count_clicks(token, url))
+            print('Count clicks', count_clicks(token, url))
         else:
-            print('Битлинк', shorten_link(token, url))
+            print('Bitlink', shorten_link(token, url))
     except requests.exceptions.ConnectionError as error:
         exit(f"Can't get data from server: {error}")
 
