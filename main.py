@@ -42,7 +42,8 @@ def main():
     load_dotenv()
     token = os.environ['BITLY_TOKEN']
     url = input()
-    parsed_url = urlparse(url).netloc + urlparse(url).path
+    parsed_url = urlparse(url)
+    parsed_url = f'{parsed_url.netloc}{parsed_url.path}'
     try:
         if is_link_shorten(parsed_url, token):
             print('Count clicks', count_clicks(parsed_url, token))
