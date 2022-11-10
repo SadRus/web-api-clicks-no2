@@ -1,6 +1,11 @@
-import requests
+#!/usr/bin/env python3
+
+import argparse
 import os
+import requests
+
 from urllib.parse import urlparse
+
 from dotenv import load_dotenv
 
 
@@ -39,9 +44,16 @@ def is_link_shorten(parsed_url, token):
 
 
 def main():
+    parser = argparse.ArgumentParser(
+        description='''Script provide shorten link
+        or count total clicks for yours bitlink'''
+    )
+    parser.add_argument('link', help='Link')
+    args = parser.parse_args()
+
     load_dotenv()
     token = os.environ['BITLY_TOKEN']
-    url = input()
+    url = args.link
     parsed_url = urlparse(url)
     parsed_url = f'{parsed_url.netloc}{parsed_url.path}'
     try:
