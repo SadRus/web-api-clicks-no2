@@ -14,8 +14,12 @@ Use `pip` (or `pip3`) for install requirements:
 ```
 pip install -r requirements.txt
 ```
-Also you need Access token in enviroment variables when connecting to Bitly through API. 
-Generate token in yours bitly profile - developer settings.
+
+### Enviroment
+
+You needs to create .env file in main folder for enviroment variables.
+
+BITLY_TOKEN - access token for connecting to Bitly through API. Generate token in yours bitly profile - developer settings.
 
 ### Usage
 
